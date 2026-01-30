@@ -11,6 +11,17 @@ export interface SeasonPoints {
   wins: number;
 }
 
+export interface GitHubConfig {
+  token: string;
+  gistId: string;
+  enabled: boolean;
+}
+
+export interface GlobalData {
+  scores: ScoreEntry[];
+  standings: SeasonPoints[];
+}
+
 export interface GameInfo {
   id: string;
   title: string;
