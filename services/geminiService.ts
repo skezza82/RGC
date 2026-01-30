@@ -1,23 +1,37 @@
 
 import { GoogleGenAI } from "@google/genai";
 
-const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+export const geminiService = {
+  generateTetrisBackground: async (): Promise<string | null> => {
+    if (!process.env.API_KEY) return null;
+    
+    // Initializing Gemini client
+    const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
+    try {
+      const response = await ai.models.generateContent({
+        model: 'gemini-2.5-flash-image',
+        contents: {
+          parts: [{ text: "A futuristic retro-synthwave inspired digital background featuring abstract falling neon blocks similar to Tetris, cybernetic aesthetic, cyan and purple glow, 4k resolution, 16:9" }]
+        },
+        config: {
+          imageConfig: {
+            aspectRatio: "16:9"
+          }
+          // Note: responseMimeType is NOT set here to prevent errors with the nano banana series models.
+        }
+      });
 
-export const getGameStrategy = async (gameTitle: string) => {
-  try {
-    const response = await ai.models.generateContent({
-      model: 'gemini-3-flash-preview',
-      contents: `Provide a brief, futuristic, high-tech sounding strategy guide for a retro game called "${gameTitle}". 
-      Include 3 pro-tips and a small piece of "lore" about the game's origin in a cyberpunk future. Keep it concise.`,
-      config: {
-        temperature: 0.7,
-        topP: 0.8,
-        topK: 40
+      const candidate = response.candidates?.[0];
+      if (candidate?.content?.parts) {
+        for (const part of candidate.content.parts) {
+          if (part.inlineData) {
+            return `data:image/png;base64,${part.inlineData.data}`;
+          }
+        }
       }
-    });
-    return response.text;
-  } catch (error) {
-    console.error("Gemini Error:", error);
-    return "Failed to establish uplink with AI strategist. Please check your connection.";
+    } catch (error) {
+      console.error("Failed to generate background:", error);
+    }
+    return null;
   }
 };
