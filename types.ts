@@ -1,39 +1,26 @@
 
 export interface ScoreEntry {
-  username: string;
+  id: string;
+  playerName: string;
   score: number;
-  date: string;
+  timestamp: number;
 }
 
-export interface SeasonPoints {
-  username: string;
+export interface SeasonEntry {
+  playerName: string;
   points: number;
-  wins: number;
 }
 
-export interface GitHubConfig {
-  token: string;
-  gistId: string;
-  enabled: boolean;
-}
-
-export interface GlobalData {
+export interface WeeklyData {
+  gameName: string;
   scores: ScoreEntry[];
-  standings: SeasonPoints[];
+  lastReset: number; // timestamp
 }
 
-export interface GameInfo {
+export interface Game {
   id: string;
   title: string;
   description: string;
-  thumbnail: string;
-  type: 'internal' | 'external';
-}
-
-export enum View {
-  HOME = 'HOME',
-  ARCADE = 'ARCADE',
-  LEADERS = 'LEADERS',
-  SEASON = 'SEASON',
-  AI_STRATEGY = 'AI_STRATEGY'
+  embedUrl: string;
+  thumbnailUrl?: string;
 }
